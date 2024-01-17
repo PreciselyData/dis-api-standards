@@ -1,2 +1,2 @@
 # dis-api-standards
-APi Standards for DI Suite APIs
+API Standards for DI Suite APIs
