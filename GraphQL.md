@@ -175,3 +175,69 @@ type Query {
 ```
 
 While the second example will still provide the same information, there is no true relationship between the `Address` and the `User`.  It's indicated as a separate record.
+
+## Queries
+
+When creating queries, it is best practice to use a name to define each query.
+
+When querying data, only query what you need.  Querying unnecessary fields in a data set just adds increased overhead and network traffic that could be otherwise avoided.
+
+### Simple queries
+
+```graphql
+query MySimpleQuery {
+    getUsersForDomain(domain: 'bestpractices.com') {
+        user {
+            emailAddress
+            physicalAddress {
+                streetNumber
+                streetName
+                city
+                stateProvince
+                zipcode
+            }
+        }
+    }
+}
+```
+
+Avoid:
+
+```graphql
+query {
+    getXYZ ...
+}
+```
+
+While both syntax styles are correct, it is always best practice to name a query.
+
+### Dynamic and programmatic queries
+
+Here's an example dynamic query:
+
+```graphql
+query GetUser($userID: ID!) {
+    getUserById(id: $userID) {
+        user {
+            emailAddress
+            physicalAddress {
+                ...
+            }
+        }
+    }
+}
+```
+
+This example gives you the ability to store a query, and programmatically apply it to the GraphQL server by setting a value to the variable, in this case `userID`, and telling the server to execute the query.
+
+Avoid queries like this, unless using a notebook for the query:
+
+```graphql
+query getUser {
+    getUserById(id: 5) {
+        ...
+    }
+}
+```
+
+Although still a valid query, you lose the dynamic nature of the query.  Only perform queries like these if you're using a notebook.
