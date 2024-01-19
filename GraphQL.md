@@ -144,7 +144,6 @@ Avoid:
 
 ```graphql
 type User {
-    type User {
     userID: ID!
     emailAddress: String!
 }
