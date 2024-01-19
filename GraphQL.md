@@ -40,6 +40,8 @@ type XYZ {
 }
 ```
 
+(Some comments were omitted in the examples below for brevity.)
+
 ## Data Types Definitions
 
 Types in GraphQL should:
@@ -186,7 +188,7 @@ When querying data, only query what you need.  Querying unnecessary fields in a 
 
 ```graphql
 query MySimpleQuery {
-    getUsersForDomain(domain: 'bestpractices.com') {
+    getUsersForDomain(domain: "bestpractices.com") {
         user {
             emailAddress
             physicalAddress {
