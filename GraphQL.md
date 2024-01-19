@@ -8,8 +8,9 @@ Field names should:
 
 - Be human readable
 - Should not contain abbreviations unless they are common (ID, GPS, DNS, etc.)
-- Should not contain underscores
+- Should not contain underscores, unless they are internally used variables
 - Should be camelCase
+- Common abbreviated names should be all caps: `ServerDNSAddress`, `IPAddress`, `userID`, `carVIN`
 
 ## Comments
 
@@ -41,7 +42,12 @@ type XYZ {
 
 ## Data Types Definitions
 
-Types in GraphQL should be named using `PascalCase`.  This means names like `user`, `accessCredentials`, `userProfile`, etc. all would become `User`, `AccessCredentials`, `UserProfile`, etc.
+Types in GraphQL should:
+
+- Be human readable
+- Should contain names in PascalCase (like `User` vs `user`, `UserProfile` vs `userProfile`, etc.)
+- Should not contain abbreviations
+- Should not contain underscores
 
 Acceptable example:
 
