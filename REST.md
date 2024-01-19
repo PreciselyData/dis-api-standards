@@ -2,7 +2,7 @@
 
 Rest stands for "Representational State Transfer".
 
-REST is a programmatic interface that allows applications web-based access to endpoints to provide access to services.  These services, backed by the HTTP protocol, are secure and scalable.
+REST is a programmatic interface that provides web-based access to back end services.  These services, backed by the HTTP protocol, are secure and scalable.
 
 This document describes the best practices for implementing REST services at Precisely.
 
