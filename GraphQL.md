@@ -2,15 +2,17 @@
 
 This is a concise document that outlines the best practices for schema definition, proper field definition, documentation, and query methods.  Consider this a guideline, and a living document.  There is _always_ room for improvement.
 
+Remember, GraphQL is a _Query Language_ first, which means it follows certain naming conventions for queries.  GraphQL is not a programming language, so programming rules mostly do not apply here.  There are a few exceptions.
+
 ## Field names
 
-Field names should:
+Field names must:
 
 - Be human readable
-- Should not contain abbreviations unless they are common (ID, GPS, DNS, etc.)
-- Should not contain underscores, unless they are internally used variables
-- Should be camelCase
-- Common abbreviated names should be all caps: `ServerDNSAddress`, `IPAddress`, `userID`, `carVIN`
+- Be camelCase
+- Not contain abbreviations unless they are commonly known (ID, GPS, DNS, HTTP, etc.)
+- Not contain underscores, unless they are internally used variables - in which case, they should _start_ with underscores.
+- Have common abbreviated names should be all caps: `ServerDNSAddress`, `IPAddress`, `userID`, `carVIN`
 
 ## Comments
 
@@ -26,7 +28,7 @@ Comment
 """
 type XYZ {
     ID: String!
-    fieldName1: String
+    fieldName: String
     ...
 }
 ```
@@ -44,12 +46,12 @@ type XYZ {
 
 ## Data Types Definitions
 
-Types in GraphQL should:
+Types in GraphQL must:
 
 - Be human readable
-- Should contain names in PascalCase (like `User` vs `user`, `UserProfile` vs `userProfile`, etc.)
-- Should not contain abbreviations
-- Should not contain underscores
+- Not contain abbreviations
+- Not contain underscores
+- Contain names in PascalCase (like `User` vs `user`, `UserProfile` vs `userProfile`, etc.)
 
 Acceptable example:
 
@@ -82,9 +84,9 @@ type accessCredentials {
 
 While `AccessTypeEnum` is a valid enumeration type, `Key` and `Value` field names should be avoided as they are not `camelCase`.  `access_type` also does not conform to the Field Name definition standard.  It really should have been called `accessType`.
 
-## Enumerations and associated values
+## Enumerations
 
-Enumerations should be in all caps.  These are considered constant values, and should be treated as such in GraphQL.  Enumerations should end with the name `Enum` to indicate the data type definition.
+Enumerations must be in all caps.  These are considered constant values, and should be treated as such in GraphQL.  Enumerations should end with the name `Enum` to indicate the data type definition.
 
 Acceptable example:
 
@@ -114,11 +116,11 @@ enum TaskState {
 }
 ```
 
-Why?  While `TaskState` is perfectly acceptable as a naming convention (PascalCase), it indicates the name of a class definition that returns a payload of data, rather than an enumerated type with known possible values.
+Why?  While `TaskState` is perfectly acceptable as a naming convention (PascalCase), it indicates the name of a class definition that returns a payload, rather than an enumerated type with known values.
 
 The same rule applies to the values of the enumeration.  While this differs language-to-language (a'la Java vs. TypeScript vs. Rust), using consistent names in GraphQL is desired.  Names in all caps indicate constant values, just as they might in other structured languages.
 
-## Graphing Classes
+## Structured Types
 
 As GraphQL builds a graph of data, your schema should be designed in such a way that the data returned is as a graph, not a top level set of objects.
 
@@ -213,7 +215,7 @@ query {
 
 While both syntax styles are correct, it is always best practice to name a query.
 
-### Dynamic and programmatic queries
+### Dynamic queries
 
 Here's an example dynamic query:
 
