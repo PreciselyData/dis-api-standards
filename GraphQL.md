@@ -283,4 +283,4 @@ In the above example:
 - `FIPSCode` is being moved to the `EnrichedAddress` type, with `fips` as the new value.  It will remain in `Address` until version 4.
 - `zip4` is being removed entirely in version 2.
 
-Use these rules wherever possible.  When using date/time, please adhere to the date/time rules in the API Standards documentation.
+Use these rules wherever possible.  When using date/time, please adhere to the date/time rules in the API Standards documentation. 
