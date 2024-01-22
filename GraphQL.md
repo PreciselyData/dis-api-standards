@@ -245,3 +245,42 @@ query getUser {
 ```
 
 Although still a valid query, you lose the dynamic nature of the query.  Only perform queries like these if you're using a notebook.
+
+## Deprecating fields
+
+When deprecating a field in a schema, the data must still be provided in that field for at least a couple of versions in order for clients to make appropriate adjustments to their software, and any queries they are utilizing.
+
+Deprecated fields must include:
+
+- The reason for deprecation
+- The new location (structured type, and field name)
+- The date/time or version when the expected removal will take place.
+
+Example:
+
+```graphql
+type Address {
+    street1: String
+    unit1: String @deprecated(reason: "Use `streetAlt` instead; will be removed in version 3")
+    streetAlt: String
+    city: String
+    stateProvince: String
+    FIPSCode: String @deprecated(reason: "Use `NewAddress::fips` instead; will be removed in version 4")
+    zipcode: String
+    zip4: String @deprecated(reason: "Use `zipcode` instead, it will be formatted with the plus 4 data from USPS.  Will be removed in version 2")
+}
+
+type EnrichedAddress {
+    preciselyID: ID!
+    streetAddress: Address
+    fips: String
+}
+```
+
+In the above example:
+
+- `Address` is renaming `unit1` to `streetAlt` in version 3, but the data will still be available for users of versions 1 and 2.
+- `FIPSCode` is being moved to the `EnrichedAddress` type, with `fips` as the new value.  It will remain in `Address` until version 4.
+- `zip4` is being removed entirely in version 2.
+
+Use these rules wherever possible.  When using date/time, please adhere to the date/time rules in the API Standards documentation.
