@@ -284,3 +284,12 @@ In the above example:
 - `zip4` is being removed entirely in version 2.
 
 Use these rules wherever possible.  When using date/time, please adhere to the date/time rules in the API Standards documentation. 
+
+## Developer Safety
+
+### Introspection
+
+Introspection provides insights into the inner workings of a currently running GraphQL server.  It provides users with a mechanism to discover the types of queries a server supports along with any schema information and system specifics.
+
+As a result of this internal access, **it is not advised enable this feature for production**, as it can serve as a security and data risk.
+
