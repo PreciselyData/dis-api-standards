@@ -1,0 +1,10 @@
+site_name: dis-api-standards
+site_description: Data Integrity Suite Software Standards Documentation
+plugins:
+  - techdocs-core
+nav:
+  - dis-api-standards: index.md
+  - GraphQL Best Practices: GraphQL.md
+  - Precisely API Design Guidelines: PreciselyAPIDesignGuidelines.md
+  - REST API Standard: REST.md
+
