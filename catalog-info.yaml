@@ -2,6 +2,7 @@ apiVersion: backstage.io/v1alpha1
 kind: Component
 metadata:
   name: dis-api-standards
+  description: Data Integrity Suite Standards
   annotations:
     backstage.io/techdocs-ref: dir:.
 spec:
