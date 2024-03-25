@@ -10,5 +10,5 @@ This project is licensed under the Apache License 2.0
 
 ## Links
 
-- [REST Service API Standards](./docs/REST.md)
+- [REST Service API Standards](./docs/PreciselyAPIDesignGuidelines.md)
 - [GraphQL Standards](./docs/GraphQL.md)
