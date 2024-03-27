@@ -1,47 +1,46 @@
 # Precisely API Design Guidelines
 
-# Introduction
-
 Most modern web applications expose APIs that clients can use to
 interact with the application. A well-designed web API should aim to
 support:
 
-**Platform independence:** Any client should be able to call the API,
-regardless of how the API is implemented internally. This requires using
+**Platform independence:**<br/> Any client should be able to call the API,
+regardless of implementation. This requires using
 standard protocols and having a mechanism whereby the client and the web
 service can agree on the format of the data to exchange.
 
-**Service evolution:** The web API should be able to evolve and add
-functionality independently from client applications. As the API
+**Service evolution:**<br/>
+The web API should be able to evolve and add
+functionality independently from client applications. As it
 evolves, existing client applications should continue to function
-without modification. All functionalities should be discoverable so that
-client applications can fully use it.
+without modification. All services should be discoverable so that
+client applications can fully use them.
 
-The standard defined in this document provides guidance on things that
+The standards defined in this document provide guidance on things that
 you **should consider** when designing web APIs. The guidelines described
-below are based on industry wide practices, pragmatic REST (**RE**presentational **S**tate **T**ransfer) principles
+below are based on industry wide best practices, pragmatic REST (**RE**presentational **S**tate **T**ransfer) principles
 and ease of use for developers. Based on these objectives, these
 standards and guidelines will attempt to provide APIs that appear
-logically connected, are self-documenting and easy for the developers to
-guess patterns and start using quickly. Private or internal APIs should
+logically connected, self-documenting, easy for the developers to
+guess patterns, and start using quickly. Private or internal APIs should
 also try to follow these guidelines because internal services tend to
 eventually be exposed publicly. Consistency is valuable to not only
-external customers but also internal service consumers, and these
+external customers, but also internal service consumers, and these
 guidelines offer best practices useful for any service.
 
 These guidelines aim to achieve the following:
 
-- Define consistent practices and patterns for all API endpoints across
+- Define **consistent practices and patterns** for all API endpoints across
   Precisely.
 
-- Adhere as closely as possible to accepted REST/HTTP best practices in
+- **Adhere as closely as possible to accepted REST/HTTP best practices** in
   the industry at-large.
 
-- Make accessing Precisely Services via REST interfaces easy for all
-  application developers.
+- Make accessing Precisely Services via REST interfaces **easy for all
+  application developers**.
 
-- Allow service developers to leverage the prior work of other services
-  to implement, test and document REST endpoints defined consistently.
+- **Allow service developers to leverage the prior work of other services**
+  to implement, test, and document REST endpoints defined consistently.
 
 > <u>Important Note:</u> Private APIs can be included on public servers, but must be hidden from
 > Swagger documentation.  Most programmatic interfaces allow you to do this with
@@ -72,20 +71,16 @@ A typical URI for a managed RESTful API MUST be represented as follows,
 | [https://api.{region}.cloud.precisely.com/{version}/{product}/{resource}?queryParam1=abc&queryParam2=xyz](https://api.precisely.com/%7bproduct%7d/%7bversion%7d/%7bresource%7d?queryParam1=abc&queryParam2=xyz) |
 |---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
 
-
-**{region}**
-
+**{region}**<br/>
 This is the geographic region for the service.  For example `us1`, `eu1`, `jp1`, etc.  
 
-**{version}**
-
+**{version}**<br/>
 API Versions are represented as `v1`, `v2`, etc. This number versioning 
 scheme is not similar to semver; all numbers should be treated as
 majors.  And major releases should increase by one number, and subsequent
 older releases should follow a **deprecation cycle**.
 
-**{product}**
-
+**{product}**<br/>
 Represents a product or a product family. May also represent capability
 that is not specific to a product and therefore be categorized as common
 services.
@@ -97,14 +92,12 @@ Some considerations for product are:
 As part of the resource modeling activity, SMEs from the respective
 domains will recommend appropriate products to be exposed.
 
-**{resource}**
-
+**{resource}**<br/>
 A **resource** is an object or a representation of an entity that has some
 data associated with it. Examples of resources are, `products`, `features`,
 `plans`, etc.
 
-**{queryParam}**
-
+**{queryParam}**<br/>
 Query parameters are optional URI elements and can be used to modify the
 behavior of the API.
 
@@ -130,9 +123,10 @@ method in the request **SHOULD** define the kind of action to be performed
 on the resource. E.g., if *product* is a resource,
 then *products* should be the top-level path element. For instance, to
 create a new *product* the following URL path should be used: `POST
-/products`
+/products` (Hence, you are adding a new _product_ to the list of available
+_products_.)
 
-**Establish and maintain a Hierarchy of resources.**
+**Establish and maintain a hierarchy of resources.**
 
 While identifying sub-resources under a base resource it is recommended
 to establish and maintain a resource hierarchy.
@@ -147,7 +141,7 @@ sub-resource should be helpful in accomplishing a specific business
 operation.
 
 Additionally, said operations might be performed out of order (asynchronously), which
-could cause catastrophic results during edits or publishing actions.
+could cause catastrophic results when editing or publishing.
 
 **Avoid using mixed-case resource and sub-resource names.**
 
@@ -166,20 +160,18 @@ parameters should be case insensitive; refer to
 # V1 to V2 migration
 
 As developers might be aware, there is a current usage pattern that has been
-in place for older v1 URLs.  This old versioning style no longer follows modern
-standards or best practices.
+in place for older v1 URLs. **This old versioning style no longer follows modern
+standards or best practices**.
 
 Old style:
 
 | `https://{service}.api.precisely.com/{product}/v1/{resource}` |
 |---------------------------------------------------------------|
 
-**{service}**
-
+**{service}**<br/>
 This is the name of the service handling the request.
 
-**{product} and {resource}**
-
+**{product} and {resource}**<br/>
 Same as stated above.
 
 New style:
@@ -191,28 +183,28 @@ New style:
 > All that would have to be done is an internal rewrite/proxy of the `v2` url so that it
 > points to the old `v1` URL.
 >
-> This will help speed up adoption across the board, and make transitioning from `v1`
-> APIs transparent to the end user, or service, currently utilizing the old method.
+> **This will help increase adoption across the board**, and make transitioning from `v1`
+> APIs to `v2` transparent to the consumer currently utilizing the old method.
 
 # HTTP Methods
 
 HTTP methods operate on a collection or a resource. The HTTP protocol
 defines several methods that assign semantic meaning to a request.
 
-| Method    | Operation                  | Description                                                                                                                                                                                |
-|-----------|----------------------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| `GET`     | [collection] `/products`   | Return a list of products. It should return a 200 response with an empty array (or array within a pagination type) when there are no resources to return.                                  |
-| `GET`     | [resource] `/products/111` | Get details on products with id 111. Additional parameters required to perform the GET operation are passed as query parameters.                                                           |
-| `POST`    | [collection] `/products`   | Create a new product(s). The details of the record to be created is provided as part of the POST body. Response should return an HTTP Location header that is the GET URL of the resource. |
-| `PUT`     | [resource] `products/111`  | Update the entire record ID `111` with the contents of the body.                                                                                                                           |
-| `PATCH`   | [resource] `products/111`  | Selectively updates the record `111` only with the fields present in the body. (ie. partial updates)                                                                                       |
-| `DELETE`  | [resource] `products/111`  | Deletes record `111`.  May also operate on a collection.                                                                                                                                   |
-| `OPTIONS` |                            | Returns a list of supported HTTP operations |
+| Method    | Operation                  | Description                                                                                                                                                                                     |
+|-----------|----------------------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `GET`     | [collection] `/products`   | Return a list of products. It should return a `200` response with an empty array (or array within a pagination type) when there are no resources to return.                                     |
+| `GET`     | [resource] `/products/111` | Get details on products with id `111`. Additional parameters required to perform the `GET` operation are passed as query parameters.                                                            |
+| `POST`    | [collection] `/products`   | Create a new product(s). The details of the record to be created is provided as part of the `POST` body. Response should return an HTTP `Location` header that is the `GET` URL of the resource. |
+| `PUT`     | [resource] `products/111`  | Update the entire record ID `111` with the contents of the body.                                                                                                                                |
+| `PATCH`   | [resource] `products/111`  | Selectively updates the record `111` only with the fields present in the body. (ie. partial updates)                                                                                            |
+| `DELETE`  | [resource] `products/111`  | Deletes record `111`.  May also operate on a collection.                                                                                                                                        |
+| `OPTIONS` |                            | Returns a list of supported HTTP operations                                                                                                                                                     |
 
-> <u>Note regarding POST for getting information on resources:</u>
+> <u>Note regarding `POST` for retrieving information on resources:</u>
 >
 > For instances where the data to be provided for a `GET` operation may
-> exceed the limit of the URI or is very verbose, a `POST` is recommended
+> exceed the limit of the URI, or is very verbose, a `POST` is recommended
 > to _get_ information about the resources by passing the request data
 > in the body. This is because a `GET` does not typically process a body.
 >
@@ -225,33 +217,33 @@ HTTP status codes are returned as part of all responses. The following
 is a list of the status codes commonly returned by the various
 operations:
 
-| Status code                  | Description                                                                                                                                                                                                                                                                                                                                          |
-|------------------------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| `200 OK`                     | A generic successful response. Typically returned by a `GET` or a `PUT` returning information.                                                                                                                                                                                                                                                       |
-| `201 CREATED`                | Returned by a `POST` method after a record is successfully created. The create resource URI should be specified in the Location HTTP header or its resource URI should match the URI of the `POST` (see [RFC 7231](https://tools.ietf.org/html/rfc7231#section-6.3.2))                                                                               |
-| `202 ACCEPTED`               | This status code indicates that the request has been accepted by the server for processing, but the processing has not been completed yet.                                                                                                                                                                                                           |
-| `204 NO CONTENT`             | The server has successfully fulfilled the request and that there is no additional content to send in the response payload body.                                                                                                                                                                                                                      |
-| `301 MOVED PERMANENTLY`      | The target resource has been assigned a new permanent URI and any future references to this resource ought to use one of the enclosed URIs. The server **SHOULD** generate a `Location` header field in the response containing a preferred URI reference for the new permanent URI.                                                                 |
-| `303 SEE OTHER`              | A 303 response to a `GET` request indicates that the server does not have a representation of the target resource. The `Location` field value in the response should refer to the resource on which a `GET` can be invoked to retrieve the target resource.                                                                                          |
-| `400 BAD REQUEST`            | These are returned by various methods when the data provided by the client (as part of URI, query parameters or the body) does not meet server requirements.                                                                                                                                                                                         |
-| `401 UNAUTHORIZED`           | Authentication information not provided, or authentication failed.                                                                                                                                                                                                                                                                                   |
-| `403 FORBIDDEN`              | Usually indicates that the authentication succeeded but the credentials do not have sufficient permissions to access resource                                                                                                                                                                                                                        |
-| `404 NOT FOUND`              | The requested resource is not found.                                                                                                                                                                                                                                                                                                                 |
-| `405 METHOD NOT ALLOWED`     | The method requested is not allowed for the resource in the URI.                                                                                                                                                                                                                                                                                     |
-| `406 NOT ACCEPTABLE`         | Requested media type (in the `Accept` header) is not supported. For e.g. supported media types include `application/json` and `application/xml`                                                                                                                                                                                                      |
-| `409 CONFLICT`               | The request could not be completed due to a conflict with the current state of the target resource. This code is used in situations where the caller might be able to resolve the conflict and resubmit the request.                                                                                                                                 |
-| `410 GONE`                   | The target resource is no longer available at the origin server and that this condition is likely to be permanent.                                                                                                                                                                                                                                   |
-| `413 CONTENT TOO LARGE`      | The request for data from a request exceeds the server's size limit. |
-| `415 UNSUPPORTED MEDIA TYPE` | The origin server is refusing to service the request because the payload is in a format not supported by this method on the target resource.                                                                                                                                                                                                         |
-| `429 TOO MANY REQUESTS`      | The user has sent too many requests in a given period. To be used when throttling is performed on a per user/customer basis.                                                                                                                                                                                                                         |
-| `500 INTERNAL SERVER ERROR`  | An internal error was encountered that prevents the server from processing the request and providing a valid response                                                                                                                                                                                                                                |
+| Status code                  | Description                                                                                                                                                                                                                                                                                                                                         |
+|------------------------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `200 OK`                     | A generic successful response. Typically returned by a `GET` or a `PUT` returning information.                                                                                                                                                                                                                                                      |
+| `201 CREATED`                | Returned by a `POST` method after a record is successfully created. The create resource URI should be specified in the `Location` HTTP header or its resource URI should match the URI of the `POST` (see [RFC 7231](https://tools.ietf.org/html/rfc7231#section-6.3.2))                                                                            |
+| `202 ACCEPTED`               | This status code indicates that the request has been accepted by the server for processing, but the processing has not been completed yet (for instances where data may be batch processed.)                                                                                                                                                        |
+| `204 NO CONTENT`             | The server has successfully fulfilled the request and there is no additional content to be sent in the response payload body.                                                                                                                                                                                                                       |
+| `301 MOVED PERMANENTLY`      | The target resource has been assigned a new permanent URI and any future references to this resource ought to use one of the enclosed URIs. The server **SHOULD** generate a `Location` header field in the response containing a preferred URI reference for the new permanent URI.                                                                |
+| `303 SEE OTHER`              | A `303` response to a `GET` request indicates that the server does not have a representation of the target resource. The `Location` field value in the response should refer to the resource on which a `GET` can be invoked to retrieve the target resource.                                                                                       |
+| `400 BAD REQUEST`            | These are returned by various methods when the data provided by the client (as part of URI, query parameters or the body) does not meet server requirements.                                                                                                                                                                                        |
+| `401 UNAUTHORIZED`           | Required authentication information not provided, or authentication failed.                                                                                                                                                                                                                                                                         |
+| `403 FORBIDDEN`              | Usually indicates that the authentication succeeded but the credentials do not have sufficient permissions to access resource.                                                                                                                                                                                                                      |
+| `404 NOT FOUND`              | The requested resource is not found.                                                                                                                                                                                                                                                                                                                |
+| `405 METHOD NOT ALLOWED`     | The method requested is not allowed for the resource in the URI.                                                                                                                                                                                                                                                                                    |
+| `406 NOT ACCEPTABLE`         | Requested media type (in the `Accept` header) is not supported. For e.g. supported media types include `application/json` and/or `application/xml`                                                                                                                                                                                                  |
+| `409 CONFLICT`               | The request could not be completed due to a conflict with the current state of the target resource. This code is used in situations where the caller might be able to resolve the conflict and resubmit the request.                                                                                                                                |
+| `410 GONE`                   | The target resource is no longer available at the origin server and that this condition is likely to be permanent.                                                                                                                                                                                                                                  |
+| `413 CONTENT TOO LARGE`      | The request for data from a request exceeds the server's request or response size limit.                                                                                                                                                                                                                                                            |
+| `415 UNSUPPORTED MEDIA TYPE` | The origin server is refusing to service the request because the payload is in a format not supported by this method on the target resource.                                                                                                                                                                                                        |
+| `429 TOO MANY REQUESTS`      | The user has sent too many requests in a given period. To be used when throttling is performed on a per user/customer basis.                                                                                                                                                                                                                        |
+| `500 INTERNAL SERVER ERROR`  | An internal error was encountered that prevents the server from processing the request and providing a valid response.  A log ID or message ID response is appropriate here for debugging or support.                                                                                                                                               |
 | `503 SERVICE UNAVAILABLE`    | The server is currently unable to handle the request due to a temporary overload or scheduled maintenance, which will likely be alleviated after some delay. The server **MAY** send a `Retry-After` header field [to suggest an appropriate amount of time for the client to wait before retrying the request](https://httpstatuses.com/503#ref-1). |
-| `504 GATEWAY TIMEOUT`        | The server was acting as a gateway or proxy and did not receive a timely response from the upstream server.                                                                                                                                                                                                                                          |
+| `504 GATEWAY TIMEOUT`        | The server was acting as a gateway or proxy and did not receive a timely response from the upstream server.                                                                                                                                                                                                                                         |
 
-> Additional HTTP status codes may be returned based on specific product
-> requirements. 4XX errors are classified as client errors, and the API
+> Additional HTTP status codes may be returned based per specific product
+> requirements. `4XX` errors are classified as client errors, and the API
 > consumer can make appropriate changes to the request and receive a
-> successful response. 5XX errors are classified as server errors and can
+> successful response. `5XX` errors are classified as server errors and can
 > be resolved only by the API provider.
 
 # Query Parameters
@@ -261,11 +253,11 @@ results of an operation. Below are some of the query parameters
 recommended by this document that can be utilized as applicable to the
 corresponding APIs:
 
-| Parameter    | Description                                                                                                                                                                      |
-|--------------| -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Parameter    | Description                                                                                                                                                                        |
+|--------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
 | `sortOrder`  | For a `GET` operation on a collection, this parameter can be used to specify the sort order.                                                                                       |
-| `offset`     | Starting key or index/offset into the collection in a paginated response.                                                                                                        |
-| `limit`      | Parameter to control the number of records to be returned in the response. To be used for paginated API calls. Defaults to an API specific max size as defined by the server.    |
+| `offset`     | Starting key or index/offset into the collection in a paginated response.                                                                                                          |
+| `limit`      | Parameter to control the number of records to be returned in the response. To be used for paginated API calls. Defaults to an API specific max size as defined by the server.      |
 | `details`    | For a `GET` operation, the level of details returned can be specified using this parameter. The values are full, basic, compact, summary. The implementation is resource specific. |
 
 Other examples of query parameters are - `searchBy`, `startDate`, `endDate`,
@@ -276,19 +268,21 @@ etc.
 > request is treated as a `GET` for a request that might return a larger than expected
 > payload.
 
+Additional documentation to be provided here regarding JSONAPI suggestions.
+
 # Response Body
 
 For most methods a body is returned as part of the response. Standard
 responses are as follows.
 
-| HTTP methods                    | Status code   | Response body                                                        |
-|---------------------------------|---------------| -------------------------------------------------------------------- |
-| `GET`                           | `200 OK`      | Information requested                                                |
-| `POST` (requesting information) | `200 OK`      | Information requested                                                |
-| `POST` (create new resource)    | `201 CREATED` | URI to the newly created resource is returned in the Location header |
-| `PUT`                           | `200 OK`      | Optionally return Id to resource updated                             |
-| `PATCH`                         | `200 OK`      | Optionally return Id to resource updated                             |
-| `DELETE`                        | `200 OK`      | Optionally return Id of resource deleted                             |
+| HTTP methods                    | Status code   | Response body                                                          |
+|---------------------------------|---------------|------------------------------------------------------------------------|
+| `GET`                           | `200 OK`      | Result payload                                                         |
+| `POST` (requesting information) | `200 OK`      | Result payload                                                         |
+| `POST` (create new resource)    | `201 CREATED` | URI to the newly created resource is returned in the `Location` header |
+| `PUT`                           | `200 OK`      | Optionally return `Id` to resource updated                             |
+| `PATCH`                         | `200 OK`      | Optionally return `Id` to resource updated                             |
+| `DELETE`                        | `200 OK`      | Optionally return `Id` of resource deleted                             |
 
 # Error Responses
 
@@ -296,23 +290,23 @@ In case of errors, the API returns the appropriate status codes. The
 response body may also contain additional error information. Error
 responses can be returned as part the following status codes.
 
-| Status Code | Error Response Description                                                                                                                                                                                          |
-| ----------- |---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| `400 BAD REQUEST` | Returned by the server automatically on any malformed requests                                                                                                                                                      |
-| `401 UNAUTHORIZED`<br/>`403 FORBIDDEN`<br/>`404 NOT FOUND`<br/>`405 METHOD NOT ALLOWED`<br/>`406 NOT ACCEPTABLE`<br/>`409 CONFLICT`<br/>`410 GONE`<br/>`415 UNSUPPORTED MEDIA TYPE`<br/>`429 TOO MANY REQUESTS` | Optional responses                                                                                                                                                                                                  |
-| `500 INTERNAL ERROR`<br/>`503 SERVICE UNAVAILABLE` | An error body that provides an error code that will help debug the server issue. Any other fields included in the error response **MUST NOT** provide any internal secure information that is private to Precisely. |
+| Status Code                                                                                                                                                                                                     | Error Response Description                                                                                                                                                                                              |
+|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `400 BAD REQUEST`                                                                                                                                                                                               | Returned by the server automatically on any malformed requests                                                                                                                                                          |
+| `401 UNAUTHORIZED`<br/>`403 FORBIDDEN`<br/>`404 NOT FOUND`<br/>`405 METHOD NOT ALLOWED`<br/>`406 NOT ACCEPTABLE`<br/>`409 CONFLICT`<br/>`410 GONE`<br/>`415 UNSUPPORTED MEDIA TYPE`<br/>`429 TOO MANY REQUESTS` | Optional responses                                                                                                                                                                                                      |
+| `500 INTERNAL ERROR`<br/>`503 SERVICE UNAVAILABLE`                                                                                                                                                              | An error body that **provides an error code that will help debug the server issue**. Any other fields included in the error response **MUST NOT** provide any internal secure information that is private to Precisely. |
 
 > <u>Important Note:</u> 
 > The format for the error body should follow [RFC 7807](https://tools.ietf.org/html/rfc7807) “Problem Details”, an
 > extensible error response format whose defined fields include:
 
-| Element    | Required | Description                                                                                                                                                                                                                                                                                                                                                                                                         |
-|------------| -------- |---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| `type`     | No       | A URI reference [[RFC3986](https://tools.ietf.org/html/rfc3986)] that identifies the problem type. This specification encourages that, when dereferenced, it provides human-readable documentation for the problem type (e.g., using HTML \[[W3C.REC-html5-20141028](https://tools.ietf.org/html/rfc7807#ref-W3C.REC-html5-20141028)\]). When this member is not present, its value is assumed to be "about:blank". |
-| `title`    | No       | A short, human-readable summary of the problem type. It **SHOULD NOT** change from occurrence to occurrence of the problem, except for purposes of localization (e.g., using proactive content negotiation; see [\[RFC7231\], Section 3.4](https://tools.ietf.org/html/rfc7231#section-3.4)).                                                                                                                       |
-| `status`   | No       | The HTTP status code ([[RFC7231], Section 6](https://tools.ietf.org/html/rfc7231#section-6)) generated by the origin server for this occurrence of the problem.                                                                                                                                                                                                                                                     |
-| `detail`   | No       | A human-readable explanation specific to this occurrence of the problem.                                                                                                                                                                                                                                                                                                                                            |
-| `Instance` |          | A URI reference that identifies the specific occurrence of the problem. It may or may not yield further information if dereferenced.                                                                                                                                                                                                                                                                                |
+| Element    | Required | Description                                                                                                                                                                                                                                                                                                                                                                                                          |
+|------------|----------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `type`     | No       | A URI reference [[RFC3986](https://tools.ietf.org/html/rfc3986)] that identifies the problem type. This specification encourages that, when dereferenced, it provides human-readable documentation for the problem type (e.g., using HTML \[[W3C.REC-html5-20141028](https://tools.ietf.org/html/rfc7807#ref-W3C.REC-html5-20141028)\]). When this member is not present, its value is assumed to be "about:blank".  |
+| `title`    | No       | A short, human-readable summary of the problem type. It **SHOULD NOT** change from occurrence to occurrence of the problem, except for purposes of localization (e.g., using proactive content negotiation; see [\[RFC7231\], Section 3.4](https://tools.ietf.org/html/rfc7231#section-3.4)).                                                                                                                        |
+| `status`   | No       | The HTTP status code ([[RFC7231], Section 6](https://tools.ietf.org/html/rfc7231#section-6)) generated by the origin server for this occurrence of the problem.                                                                                                                                                                                                                                                      |
+| `detail`   | No       | A human-readable explanation specific to this occurrence of the problem.                                                                                                                                                                                                                                                                                                                                             |
+| `Instance` |          | A URI reference that identifies the specific occurrence of the problem. It may or may not yield further information if dereferenced.                                                                                                                                                                                                                                                                                 |
 
 See RFC 7807 for further examples and discussion of adding custom
 extension members/properties.
@@ -379,7 +373,8 @@ out plan published for the oldest version of the API.
 ## New API Versioning
 
 Rules above still apply, but the URLs **should** use the `v2` versioning style
-outlined earlier.
+outlined earlier, particularly when creating a new project or new service
+endpoint.
 
 # Pagination
 
@@ -420,8 +415,9 @@ The API implementation **SHOULD** honor the values specified by the client;
 however, the API documentation must clearly note that the clients should
 be prepared to handle responses that contain a different page size.
 
-The API implementation should fail the request if the page requested by
-the client does not exist.
+The API implementation **SHOULD** fail the request if the page requested by
+the client does not exist.  Alternatively, a `204 NO CONTENT` response could
+be returned here.
 
 Both the above forms of paging will depend on the collection of items
 having a stable order i.e., the client (or the server) cannot change the
@@ -469,23 +465,24 @@ it avoids having to obtain totals.
 
 ## Content Negotiation
 
-All REST APIs must support JSON as the default content type for request
+All REST APIs **MUST SUPPORT JSON** as the default content type for request
 and responses as applicable. Under certain conditions (legacy APIs
-etc.,) XML could be an alternative format.
+etc.) XML could be an alternative format.
 
-Under rare circumstances APIs may support both JSON and XML content
-types in which case the API implementation should support client
-application (agent) driven content negotiation using HTTP Headers (like
+Under rare circumstances APIs **MAY** support both JSON and XML content
+types. In which case, the API implementation should support client
+application-driven (agent) content negotiation using HTTP Headers (like
 `Accept`, etc.). Implementing the `Accept` header-based content negotiation
 **is the most commonly used and recommended way of content negotiation**.
 
 If the client application is requesting for non-supported content type
-via the `Accept` header or if the client application did not include an
-Accept header in the request, then the API implementation should select
+via the `Accept` header, or if the client application did not include an
+`Accept` header in the request, then the API implementation **SHOULD** select
 `application/json` as the response body content type duly including the 
 `Content-Type` header.
 
-**Guideline:** As per `Accept` header specification it is possible for
+**Guideline:**<br/>
+As per `Accept` header specification, it is possible for
 the client application to include multiple values in `Accept` header. For
 example:
 
@@ -493,15 +490,13 @@ example:
 
 The above `Accept` header indicates that the client application is
 requesting a JSON formatted response. If the API cannot respond in JSON,
-the API could return XML format (the second level). It also indicates
+the API could fall back to returning an XML formatted response 
+(the second level). It also indicates
 that the client can accept any format as the last preference. The API
 implementation **MAY** adhere to such an algorithm.
 
-Content negotiation using URL patterns as given below are NOT
-recommended.
-
-Examples of URL formats that are **NOT** recommended, and should be
-avoided:
+Content negotiation using URL patterns as given below are **NOT**
+recommended, and should be avoided:
 
 `GET https://api.precisely.com/sample-product/v1/customers/20423.xml`
 
@@ -511,7 +506,7 @@ Instead, prefer:
 
 `GET https://api.precisely.com/sample-product/v1/customers/20423`
 
-with `Accept: application/xml` and `Accept: application/json` in the
+with `Accept: application/xml` and/or `Accept: application/json` in the
 request headers.
 
 # Compression
@@ -546,7 +541,7 @@ processing the request/response. For such requests/responses APIm
 Gateway should not apply any transformation to the request or response
 body. APIm should only be used as a proxy in such situations.
 
-> Prefer `gzip` compression.
+> **Favor `gzip` compression**.
 
 # Caching
 
@@ -579,10 +574,11 @@ the client to the server should contain all the information necessary to
 process the request. Thus, the client is responsible for maintaining all
 the application state related information.
 
-API developers should distinguish between Application State and
-Resource/entity State. "Application state" is any information that can be
+API developers should distinguish between Application (client) State and
+Resource/entity (server) State. "Application state" is any information that can be
 used to identify the incoming client requests, their previous
-interactions and current context information (e.g., cookie, access token, etc.).
+interactions, and current context information (e.g., cookie, session,
+access token, etc.).
 Whereas "Resource state" is the current state of a resource/entity
 representation on the server. REST APIs **SHOULD NOT** maintain any
 application state on the server side.
@@ -608,38 +604,39 @@ case for insert operations on items with a server-side generated id.
 However, there is an exception to this principle especially to handle
 network timeout scenarios and other unexpected error conditions.
 
-**For example:** A Client application issued a `POST` request and due to a
+**For example:**<br/>
+A client application issued a `POST` request, and due to a
 network error condition or due to an intermediary server time out issue,
 the client application never saw a `201` response from the origin server.
 When the client recovers from that error and retries the exact same
-request then the server may respond with a failure indicating that the
+request, the server may respond with a failure indicating that the
 resource already exists (e.g. `403 ALREADY EXISTS` or in some cases, a
-`409 CONFLICT`), and the client will be forced to invoke a
-search query to retrieve the resource information or may be invoke such
-a query even before attempting the `POST` request again. This can be
-avoided.
+`409 CONFLICT`).  When this occurs, the client may be forced to invoke a
+search query to retrieve the resource information. _This can be
+avoided_.
 
 For APIs wherein the create or insert (i.e., `POST` method) operation has
-a unique identifier (either the primary key or a composite key) that is
-provided by the client application then the implementation should ensure
-that the API **behaves in an idempotent manner** (i.e., resource state should
+a unique identifier (either the primary key or a composite key), the
+implementation should ensure that the API **behaves in an idempotent
+manner** (i.e., resource state should
 not change when multiple identical requests are received.) Also, multiple
-such records **SHOULD NOT** be created on the server.
+such records **SHOULD NOT** be created on the server, as the unique ID
+serves to guard against this.
 
 # API Security
 
 API security should be an integral part of the API design. APIm Gateway
 is responsible for securing the APIs onboarded. However, the API
 developer is responsible for securing the API backend and developer can
-use IP Whitelisting and _Mutually authenticated TLS._
+use IP Whitelisting and _mutually authenticated TLS._
 
 # Date/Time
 
 To avoid any interoperability problems between preferences from country
 to country, portable date time formats are recommended. It is
 recommended that the representations in request/response utilize the
-format as defined in RFC3339 for formatting the dates, times, and
-date-time values. The RFC3339 formatted values primarily adheres to
+format as defined in [RFC3339](https://datatracker.ietf.org/doc/html/rfc3339) for formatting the dates, times, and
+date-time values. [RFC3339](https://datatracker.ietf.org/doc/html/rfc3339) formatted values primarily adheres to
 Coordinated Universal Time (UTC) thus avoiding issues related to time
 zones and daylight-saving time setting changes.
 
@@ -651,18 +648,21 @@ as strings.
 
 # OpenAPI Docs
 
-APIs published should have OpenAPI Specification for API documentation.
-The OpenAPI Specification contract describes what the API does, it’s
-request parameters and response objects, all without any indication of
-code implementation. Web services defined with OpenAPI Specification
-can communicate with each other irrespective of the language they’re
-built in, since it is language agnostic and machine readable.
+**OpenAPI specifications MUST FOLLOW the [OpenAPI 3.1 standard](https://spec.openapis.org/oas/v3.1.0).**
 
-**OpenAPI Specs Generation During Build time**: Every API should
-incorporate a mechanism of to generate the OpenAPI Specification based
-on the metadata, such as code annotations, applied to various
+Published APIs should follow the OpenAPI Specification for API documentation.
+The OpenAPI Specification contract describes what the API does, its
+request parameters and response objects, all without any indication of
+code implementation. Web services defined using the OpenAPI Specification
+can communicate with each other regardless of the language they’re
+built in, since it is language-agnostic and machine readable.
+
+**OpenAPI Specs Generation During Build time**:<br/>
+Every API should
+incorporate a mechanism of generating an OpenAPI Specification based
+on the metadata: such as code annotations applied to various
 resources, methods, and controllers. This metadata will autogenerate the
-contract, client-side code, and other artifacts.
+contract, client-side code, documentation, and other artifacts.
 
 > We recommend the use
 > of the [OpenAPI Generator](https://openapi-generator.tech/) for the
@@ -670,13 +670,11 @@ contract, client-side code, and other artifacts.
 > to validate and test your specification.  Redocly will also lint your document,
 > and apply proper formatting if requested.
 
-**OpenAPI specifications MUST follow the [OpenAPI 3.1 standard](https://spec.openapis.org/oas/v3.1.0).**
-
 Springdoc-openapi and
 [Swagger-core](https://github.com/swagger-api/swagger-core) are the main
-Java implementation of Swagger which also supports JAX-RS and plain
-servlets, using these libraries in java you can generate the OpenAPI
-specification based on the meta-data added in the form of code
+Java implementations of Swagger which also support JAX-RS and plain
+servlets.  Using these libraries with Java allows for generation of the OpenAPI
+specifications based on the meta-data provided in the form of code
 annotations. Similarly, the two main OpenAPI implementations for .NET
 are
 [Swashbuckle](https://github.com/domaindrivendev/Swashbuckle.AspNetCore)
