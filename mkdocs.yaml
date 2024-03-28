@@ -6,5 +6,4 @@ nav:
   - dis-api-standards: index.md
   - GraphQL Best Practices: GraphQL.md
   - Precisely API Design Guidelines: PreciselyAPIDesignGuidelines.md
-  - REST API Standard: REST.md
 
